@@ -1,14 +1,4 @@
-<!--
-=========================================================
-* Material Dashboard 2 - v3.0.4
-=========================================================
-* Product Page: https://www.creative-tim.com/product/material-dashboard
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://www.creative-tim.com/license)
-* Coded by Creative Tim
-=========================================================
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
--->
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
@@ -18,22 +8,22 @@
     <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
     <link rel="icon" type="image/png" href="../assets/img/favicon.png">
     <title>
-        Material Dashboard 2 by Creative Tim
+        منصة الامتحانات المهنية
     </title>
     <!--     Fonts and icons     -->
     <link rel="stylesheet" type="text/css"
         href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
     <!-- Nucleo Icons -->
-    <link href="/assets/css/nucleo-icons.css" rel="stylesheet" />
-    <link href="/assets/css/nucleo-svg.css" rel="stylesheet" />
-    <script src="/assets/js/jq.js"></script>
+    <link href="../assets/css/nucleo-icons.css" rel="stylesheet" />
+    <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+    <script src="..//assets/js/jq.js"></script>
 
     <!-- Font Awesome Icons -->
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
     <!-- Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <!-- CSS Files -->
-    <link id="pagestyle" href="/assets/css/material-dashboard.css?v=3.0.4" rel="stylesheet" />
+    <link id="pagestyle" href="../assets/css/material-dashboard.css?v=3.0.4" rel="stylesheet" />
 </head>
 
 <body class="g-sidenav-show rtl bg-gray-200">
@@ -84,14 +74,19 @@
                         <span class="nav-link-text me-1">إضافة مترشح </span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link " href="../pages/sign-in.html">
-                        <div class="text-white text-center ms-2 d-flex align-items-center justify-content-center">
-                            <i class="material-icons-round opacity-10">login</i>
-                        </div>
-                        <span class="nav-link-text me-1">تسجيل الخروج</span>
-                    </a>
-                </li>
+                @auth
+                    <li class="nav-item">
+
+                        <a class="nav-link " href="{{ route('logout') }}">
+                            <div class="text-white text-center ms-2 d-flex align-items-center justify-content-center">
+                                <i class="material-icons-round opacity-10">login</i>
+                            </div>
+                            <span class="nav-link-text me-1">تسجيل الخروج</span>
+                        </a>
+
+                    </li>
+                @endauth
+
 
             </ul>
         </div>

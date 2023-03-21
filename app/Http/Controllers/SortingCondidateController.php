@@ -14,29 +14,40 @@ use Carbon\Carbon;
 class SortingCondidateController extends Controller
 {
 
+
+
     public function view()
     {
-        $sortingCondidates = SortingCondidate::orderBy("total", "desc")->get();
-        return view("list-sorting-condidate", ["sortingCondidates" => $sortingCondidates]);
+        if (auth()->user()->canAny(["admin", "reader"])) {
+
+            $sortingCondidates = SortingCondidate::orderBy("total", "desc")->get();
+            return view("list-sorting-condidate", ["sortingCondidates" => $sortingCondidates]);
+        }
     }
     public function reportCondidateSorting($sorting_condidate_id)
     {
-        $sortingCondidate = SortingCondidate::with("condidate.experiences")->find($sorting_condidate_id);
-        $SortingExperience =  $sortingCondidate->condidate->experiences->groupBy(function ($experience) {
-            return  $experience->type;
-        });
-        return view("report-condidate", ["sortingCondidate" => $sortingCondidate,"SortingExperience"=>  $SortingExperience]);
+        if (auth()->user()->canAny(["admin", "reader"])) {
+            $sortingCondidate = SortingCondidate::with("condidate.experiences")->find($sorting_condidate_id);
+            $SortingExperience =  $sortingCondidate->condidate->experiences->groupBy(function ($experience) {
+                return  $experience->type;
+            });
+            return view("report-condidate", ["sortingCondidate" => $sortingCondidate, "SortingExperience" =>  $SortingExperience]);
+        } else
+            return  "ليس لديك صلاحية الدخول إلى هنا";
     }
     public function store(Request $request)
     {
+        if (auth()->user()->canAny(["admin"])) {
 
-        DB::transaction(function () {
-            $condidates = Condidate::with("experiences")->get();
-            SortingCondidate::query()->delete();
-            SortingProfessionalExperience::query()->delete();
-            $this->sorting($condidates);
-        });
-        return redirect()->route("sorted-condidate-view");
+            DB::transaction(function () {
+                $condidates = Condidate::with("experiences")->get();
+                SortingCondidate::query()->delete();
+                SortingProfessionalExperience::query()->delete();
+                $this->sorting($condidates);
+            });
+            return redirect()->route("sorted-condidate-view");
+        } else
+            return  "ليس لديك صلاحية الدخول إلى هنا";
     }
 
     protected function  sorting($condidates)
@@ -55,16 +66,21 @@ class SortingCondidateController extends Controller
             // نقة التكوين المكمل
             $total += $pointAfterStady;
             // نقطة الاقدمية
+            $pointCertificateDate = $pointCertificateDate < 0 ? 0 : $pointCertificateDate;
             $total += $pointCertificateDate;
             // المقابلة الشفوية
-            $total += $condidate->interviewPiont;
+            $total += $condidate->interviewPiont > 3 ? 3 : $condidate->interviewPiont;
 
             ///الخبرة المهنية
-            $total += $sortExps["exPoint1"];
-            $total += $sortExps["exPoint2"];
-            $total += $sortExps["exPoint3"];
-            $total += $sortExps["exPoint4"];
-            $total += $sortExps["exPoint5"];
+            $e_total = 0;
+            $e_total += $sortExps["exPoint1"];
+            $e_total += $sortExps["exPoint2"];
+            $e_total += $sortExps["exPoint3"];
+            $e_total += $sortExps["exPoint4"];
+            $e_total += $sortExps["exPoint5"];
+            $e_total = $e_total > 6 ? 6 :  $e_total;
+            $e_total = $e_total < 0 ? 0 :  $e_total;
+            $total += $e_total;
             SortingCondidate::create(
                 [
                     "condidate_id" => $condidate->id,
@@ -112,6 +128,10 @@ class SortingCondidateController extends Controller
     }
     protected function  pointCertificateDate($condidate)
     {
+
+        $start_year = Carbon::parse($condidate->certificateDate)->year;
+        $years = 2022 - $start_year;
+        return $years > 5 ? 5 : $years;
     }
     protected function  sortingProfessionalExperience($condidate)
     {
@@ -128,28 +148,29 @@ class SortingCondidateController extends Controller
         ];
         foreach ($types as $type => $experiences) {
             $pointsTotal = 0;
+            $div = 0;
+            switch ($type) {
+                case 1:
+                    $div = 365;
+                    break;
+                case 2:
+                    $div = 365;
+                    break;
+                case 3:
+                    $div = 365 * 2;
+                    break;
+                case 4:
+                    $div = 365 * 2;
+                    break;
+                case 5:
+                    $div = 365 * 4;
+                    break;
+            }
             foreach ($experiences as $experience) {
                 $start = Carbon::parse($experience->start);
                 $end =  Carbon::parse($experience->end);
                 $days = $end->diffInDays($start);
-                $div = 0;
-                switch ($type) {
-                    case 1:
-                        $div = 365;
-                        break;
-                    case 2:
-                        $div = 365;
-                        break;
-                    case 3:
-                        $div = 365 * 2;
-                        break;
-                    case 4:
-                        $div = 365 * 2;
-                        break;
-                    case 5:
-                        $div = 365 * 4;
-                        break;
-                }
+
                 $point = round($days /  $div, 2);
                 SortingProfessionalExperience::create([
                     "professional_experiences_id" => $experience->id,

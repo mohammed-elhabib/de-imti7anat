@@ -39,8 +39,15 @@ class CondidateController extends Controller
     }
     public function list(Request $request)
     {
-        $condidates = Condidate::paginate(15);
+        $condidates = null;
+        if (isset($request->search) && !empty($request->search))
+            $condidates   = Condidate::where(function ($q) use ($request) {
+                $q->where("firstName", "like", "%" . $request->search . "%")
+                    ->orWhere("lastName", "like", "%" . $request->search . "%")
+                    ->orWhere("fileNumber", "like", "%" . $request->search . "%");
+            });
 
-        return view("list-condidate", ["condidates" => $condidates]);
+        $condidates =  $condidates == null ? Condidate::paginate(15) : $condidates->paginate(15);
+        return view("list-condidate", ["condidates" => $condidates, "search" => $request->search ?? ""]);
     }
 }

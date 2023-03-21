@@ -1,8 +1,18 @@
 @extends('master')
 @section('content')
-    <div>
-        <h1> قائمة المترشحين </h1>
+    <div class="row">
+        <div class="col">
+            <h3> قائمة الترتيبية للمترشحين </h3>
+        </div>
     </div>
+    @can("admin")
+    <div class="row">
+        <div class="col d-flex" style="    justify-content: end;        ">
+            <a class="sorting-btn" href="{{ route('sorting-condidate') }}">إعادة ترتيب</a>
+        </div>
+    </div>
+    @endcan
+
     <div class="row">
         <div class="col-12">
             <div class="card my-4">
@@ -73,4 +83,21 @@
             </div>
         </div>
     </div>
+    <style>
+        .sorting-btn {
+            padding: 5px 18px;
+            background: green;
+            color: white;
+            border-radius: 5px;
+            font-size: 20px;
+            font-weight: 700;
+
+        }
+
+        .sorting-btn:hover {
+            background: white !important;
+            color: green !important;
+            border: 1px solid green;
+        }
+    </style>
 @endsection
