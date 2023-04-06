@@ -1,8 +1,12 @@
-@extends('master')
-@section('content')
 
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+    <body>
     <div class="card" id="section-to-print">
         <style>
+            body{
+                text-align: center;
+            }
             .labal {
                 font-weight: 700;
                 color: black;
@@ -39,6 +43,7 @@
 
             .info-table {
                 margin: 10px 0px;
+                width: 100%;
             }
 
             .info-table thead tr td {
@@ -53,9 +58,17 @@
                 color: black;
                 text-align: center;
             }
-
+            .row{
+                display: flex;
+            }
+            .col{
+                width: 100%;
+            }
+            table{
+                width:100% ;
+            }
     </style>
-        <div class="card-header">
+          <div class="card-header">
             <h2 class="text-center font-weight-bolder">تقرير نتائج المترشح </h2>
         </div>
         <div class="card-body">
@@ -144,8 +157,9 @@
                     <h4 class="text-center"> الخبرة المهنية </h4>
                 </div>
             </div>
-            <div class="row">
                 @if ($SortingExperience->get('1'))
+                <div class="row">
+
                     <table class="exp-table">
                         <thead>
                             <tr>
@@ -189,9 +203,12 @@
                             </tr>
                         </tfoot>
                     </table>
+            </div>
                 @endif
 
                 @if ($SortingExperience->get('2'))
+                <div class="row">
+
                     <table class="exp-table">
                         <thead>
                             <tr>
@@ -233,9 +250,12 @@
                             </tr>
                         </tfoot>
                     </table>
+                </div>
                 @endif
 
                 @if ($SortingExperience->get('3'))
+                <div class="row">
+
                     <table class="exp-table">
                         <thead>
                             <tr>
@@ -277,9 +297,12 @@
                             </tr>
                         </tfoot>
                     </table>
+                </div>
                 @endif
 
                 @if ($SortingExperience->get('4'))
+                <div class="row">
+
                     <table class="exp-table">
                         <thead>
                             <tr>
@@ -322,9 +345,12 @@
                             </tr>
                         </tfoot>
                     </table>
+                </div>
                 @endif
 
                 @if ($SortingExperience->get('5'))
+                <div class="row">
+
                     <table class="exp-table">
                         <thead>
                             <tr>
@@ -367,12 +393,12 @@
                             </tr>
                         </tfoot>
                     </table>
+                </div>
                 @endif
 
             </div>
         </div>
     </div>
 
-
-
-@endsection
+</body>
+</html>

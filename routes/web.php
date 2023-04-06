@@ -34,7 +34,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/view/{condidate_id}', [CondidateController::class, 'view'])->name("view-condidate");
     Route::post('/edit/{condidate_id}', [CondidateController::class, 'edit'])->name("edit-condidate");
     Route::get('/sorted', [SortingCondidateController::class, 'view'])->name("sorted-condidate-view");
-    Route::get('/sorted/report/{sorting_condidate_id}', [SortingCondidateController::class, 'reportCondidateSorting'])->name("sorted-condidate-report");
+    Route::get('/sorted-report/{sorting_condidate_id}', [SortingCondidateController::class, 'reportCondidateSorting'])->name("sorted-condidate-report");
+    Route::get('/pdf-sorted-report/{sorting_condidate_id}', [SortingCondidateController::class, 'pdfReportCondidateSorting'])->name("pdf-sorted-condidate-report");
 
     #Route::post('/store','CondidateController@store')->name("store-condidate");
     Route::post('/store', [CondidateController::class, 'store'])->name("store-condidate");

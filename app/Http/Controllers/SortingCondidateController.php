@@ -23,6 +23,7 @@ class SortingCondidateController extends Controller
             $sortingCondidates = SortingCondidate::orderBy("total", "desc")->get();
             return view("list-sorting-condidate", ["sortingCondidates" => $sortingCondidates]);
         }
+
     }
     public function reportCondidateSorting($sorting_condidate_id)
     {
@@ -32,6 +33,17 @@ class SortingCondidateController extends Controller
                 return  $experience->type;
             });
             return view("report-condidate", ["sortingCondidate" => $sortingCondidate, "SortingExperience" =>  $SortingExperience]);
+        } else
+            return  "ليس لديك صلاحية الدخول إلى هنا";
+    }
+    public function pdfReportCondidateSorting($sorting_condidate_id)
+    {
+        if (auth()->user()->canAny(["admin", "reader"])) {
+            $sortingCondidate = SortingCondidate::with("condidate.experiences")->find($sorting_condidate_id);
+            $SortingExperience =  $sortingCondidate->condidate->experiences->groupBy(function ($experience) {
+                return  $experience->type;
+            });
+            return view("pdf-report-condidate", ["sortingCondidate" => $sortingCondidate, "SortingExperience" =>  $SortingExperience]);
         } else
             return  "ليس لديك صلاحية الدخول إلى هنا";
     }
@@ -69,8 +81,8 @@ class SortingCondidateController extends Controller
             $pointCertificateDate = $pointCertificateDate < 0 ? 0 : $pointCertificateDate;
             $total += $pointCertificateDate;
             // المقابلة الشفوية
-            $total += $condidate->interviewPiont > 3 ? 3 : $condidate->interviewPiont;
-
+            $pointInterview = $condidate->interviewPiont > 3 ? 3 : $condidate->interviewPiont;
+            $total += $pointInterview ;
             ///الخبرة المهنية
             $e_total = 0;
             $e_total += $sortExps["exPoint1"];
@@ -87,7 +99,7 @@ class SortingCondidateController extends Controller
                     "pointAverage" => $pointAverage,
                     "pointAfterStady" =>    $pointAfterStady,
                     "pointCertificateDate" =>   $pointCertificateDate,
-                    "pointInterview" => $condidate->interviewPiont,
+                    "pointInterview" => $pointInterview ,
                     "exPoint1" => $sortExps["exPoint1"],
                     "exPoint2" => $sortExps["exPoint2"],
                     "exPoint3" => $sortExps["exPoint3"],
@@ -128,9 +140,14 @@ class SortingCondidateController extends Controller
     }
     protected function  pointCertificateDate($condidate)
     {
-
+        $years = 0;
         $start_year = Carbon::parse($condidate->certificateDate)->year;
-        $years = 2022 - $start_year;
+        if ($start_year <= 2022) {
+            $years = (2022 - $start_year)*0.5;
+            $additon_points = (0.5 / 365) * 180;
+            $years =  $years + $additon_points;
+        }
+
         return $years > 5 ? 5 : $years;
     }
     protected function  sortingProfessionalExperience($condidate)
@@ -169,9 +186,9 @@ class SortingCondidateController extends Controller
             foreach ($experiences as $experience) {
                 $start = Carbon::parse($experience->start);
                 $end =  Carbon::parse($experience->end);
-                $days = $end->diffInDays($start);
+                $days = $end->diffInDays($start)+1;
 
-                $point = round($days /  $div, 2);
+                $point = round($days /  $div, 4);
                 SortingProfessionalExperience::create([
                     "professional_experiences_id" => $experience->id,
                     "point" => $point

@@ -18,6 +18,8 @@ class CondidateController extends Controller
     public function view($condidate_id, Request $request)
     {
         $condidate = Condidate::with("experiences")->find($condidate_id);
+        $experiences =[];
+        if( $condidate->experiences->count()>0)
         $experiences = $condidate->experiences->groupBy(function ($experience) {
 
             return $experience->type;

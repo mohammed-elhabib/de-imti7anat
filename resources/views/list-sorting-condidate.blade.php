@@ -66,6 +66,16 @@
                                                     data-toggle="tooltip" data-original-title="Edit user">
                                                     عرض التفاصيل
                                                 </a>
+                                                <a href="{{ route('pdf-sorted-condidate-report', $sortingCondidate->id) }}"
+                                                    class="text-secondary font-weight-bold text-xs"
+                                                    style="    color: orange !important;
+                                                    border: 1px solid orange;
+                                                    padding: 5px;
+                                                    border-radius: 5px;"
+                                                    target="_blank"
+                                                    data-toggle="tooltip" data-original-title="Edit user">
+                                                    طباعة
+                                                </a>
                                             </td>
                                         </tr>
                                     @endforeach
