@@ -35,7 +35,6 @@
         <div class="col-12">
             <div class="card my-4">
                 <div class="card-header">
-                    {!! $condidates->appends(['search' => $search])->links() !!}
                 </div>
                 <div class="card-body px-0 pb-2">
                     <div class="table-responsive p-0">

@@ -24,7 +24,7 @@ class Condidate extends Model
         $condidate =  Condidate::create([
             "fileNumber" => $arrags["fileNumber"],
             "firstName" => $arrags["firstName"],
-            "lastName" => $arrags["lastName"],
+           // "lastName" => $arrags["lastName"],
             "birthDate" => $arrags["birthDate"],
             "average" => $arrags["average"],
             "afterStady" => $arrags["afterStady"],
@@ -32,12 +32,14 @@ class Condidate extends Model
             "interviewPiont" => $arrags["interviewPiont"],
 
         ]);
-        $experiences =  collect($arrags["experiences"])->map(function ($experience) {
+        if (array_key_exists("experiences", $arrags)) {
+            $experiences =  collect($arrags["experiences"])->map(function ($experience) {
 
-            return new ProfessionalExperience($experience);
-        });
+                return new ProfessionalExperience($experience);
+            });
 
-        $condidate->experiences()->saveMany($experiences);
+            $condidate->experiences()->saveMany($experiences);
+        }
         return  $condidate;
     }
     public  function experiences()

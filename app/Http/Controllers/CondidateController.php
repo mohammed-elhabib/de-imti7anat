@@ -12,6 +12,15 @@ class CondidateController extends Controller
 
     public function store(Request $request)
     {
+        $validated = $request->validate([
+            "fileNumber"=> 'required',
+            "firstName"=> 'required',
+            "birthDate"=> 'required',
+            "average"=> 'required',
+            "certificateDate"=> 'required',
+            "interviewPiont"=> 'required',
+        ]);
+        if($validated)
         Condidate::makeModel($request->except("_token"));
         return redirect()->route("list-condidate");
     }
@@ -28,10 +37,20 @@ class CondidateController extends Controller
     }
     public function edit($condidate_id, Request $request)
     {
+        $validated = $request->validate([
+            "fileNumber"=> 'required',
+            "firstName"=> 'required',
+            "birthDate"=> 'required',
+            "average"=> 'required',
+            "certificateDate"=> 'required',
+
+        ]);
+        if($validated)
+
         $condidate = Condidate::find($condidate_id);
         $condidate->experiences()->delete();
 
-        $condidate->update($request->except(["_token", "experiences"]));
+        $condidate->update($request->except(["_token", "experiences","interviewPiont"]));
         $experiences =  collect($request->experiences)->map(function ($experience) {
             $experience["id"] = null;
             return new ProfessionalExperience($experience);

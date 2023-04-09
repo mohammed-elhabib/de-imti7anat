@@ -23,7 +23,6 @@ class SortingCondidateController extends Controller
             $sortingCondidates = SortingCondidate::orderBy("total", "desc")->get();
             return view("list-sorting-condidate", ["sortingCondidates" => $sortingCondidates]);
         }
-
     }
     public function reportCondidateSorting($sorting_condidate_id)
     {
@@ -66,49 +65,67 @@ class SortingCondidateController extends Controller
     {
 
         foreach ($condidates as  $condidate) {
-
-            $sortExps =   $this->sortingProfessionalExperience($condidate);
-            $pointAverage = $this->pointAverage($condidate);
-            $pointAfterStady = $this->pointAfterStady($condidate);
-            $pointCertificateDate = $this->pointCertificateDate($condidate) ?? 0;
-            /// 6 نقاط بخصوص تطابق الشهادة
-            $total = 6;
-            // نقطة المعدل
-            $total += $pointAverage;
-            // نقة التكوين المكمل
-            $total += $pointAfterStady;
-            // نقطة الاقدمية
-            $pointCertificateDate = $pointCertificateDate < 0 ? 0 : $pointCertificateDate;
-            $total += $pointCertificateDate;
-            // المقابلة الشفوية
             $pointInterview = $condidate->interviewPiont > 3 ? 3 : $condidate->interviewPiont;
-            $total += $pointInterview ;
-            ///الخبرة المهنية
-            $e_total = 0;
-            $e_total += $sortExps["exPoint1"];
-            $e_total += $sortExps["exPoint2"];
-            $e_total += $sortExps["exPoint3"];
-            $e_total += $sortExps["exPoint4"];
-            $e_total += $sortExps["exPoint5"];
-            $e_total = $e_total > 6 ? 6 :  $e_total;
-            $e_total = $e_total < 0 ? 0 :  $e_total;
-            $total += $e_total;
-            SortingCondidate::create(
-                [
-                    "condidate_id" => $condidate->id,
-                    "pointAverage" => $pointAverage,
-                    "pointAfterStady" =>    $pointAfterStady,
-                    "pointCertificateDate" =>   $pointCertificateDate,
-                    "pointInterview" => $pointInterview ,
-                    "exPoint1" => $sortExps["exPoint1"],
-                    "exPoint2" => $sortExps["exPoint2"],
-                    "exPoint3" => $sortExps["exPoint3"],
-                    "exPoint4" => $sortExps["exPoint4"],
-                    "exPoint5" => $sortExps["exPoint5"],
-                    "total" =>  $total
-                ]
+            if ($pointInterview > 0) {
+                $sortExps =   $this->sortingProfessionalExperience($condidate);
+                $pointAverage = $this->pointAverage($condidate);
+                $pointAfterStady = $this->pointAfterStady($condidate);
+                $pointCertificateDate = $this->pointCertificateDate($condidate) ?? 0;
+                /// 6 نقاط بخصوص تطابق الشهادة
+                $total = 6;
+                // نقطة المعدل
+                $total += $pointAverage;
+                // نقة التكوين المكمل
+                $total += $pointAfterStady;
+                // نقطة الاقدمية
+                $pointCertificateDate = $pointCertificateDate < 0 ? 0 : $pointCertificateDate;
+                $total += $pointCertificateDate;
+                // المقابلة الشفوية
+                $pointInterview = $condidate->interviewPiont > 3 ? 3 : $condidate->interviewPiont;
+                $total += $pointInterview;
+                ///الخبرة المهنية
+                $e_total = 0;
+                $e_total += $sortExps["exPoint1"];
+                $e_total += $sortExps["exPoint2"];
+                $e_total += $sortExps["exPoint3"];
+                $e_total += $sortExps["exPoint4"];
+                $e_total += $sortExps["exPoint5"];
+                $e_total = $e_total > 6 ? 6 : $e_total;
+                $e_total = $e_total < 0 ? 0 : $e_total;
+                $total += $e_total;
+                SortingCondidate::create(
+                    [
+                        "condidate_id" => $condidate->id,
+                        "pointAverage" => $pointAverage,
+                        "pointAfterStady" =>    $pointAfterStady,
+                        "pointCertificateDate" =>   $pointCertificateDate,
+                        "pointInterview" => $pointInterview,
+                        "exPoint1" => $sortExps["exPoint1"],
+                        "exPoint2" => $sortExps["exPoint2"],
+                        "exPoint3" => $sortExps["exPoint3"],
+                        "exPoint4" => $sortExps["exPoint4"],
+                        "exPoint5" => $sortExps["exPoint5"],
+                        "total" =>  $total
+                    ]
+                );
+            } else {
+                SortingCondidate::create(
+                    [
+                        "condidate_id" => $condidate->id,
+                        "pointAverage" => 0,
+                        "pointAfterStady" =>    0,
+                        "pointCertificateDate" =>   0,
+                        "pointInterview" => 0,
+                        "exPoint1" => 0,
+                        "exPoint2" => 0,
+                        "exPoint3" => 0,
+                        "exPoint4" => 0,
+                        "exPoint5" => 0,
+                        "total" =>  0
+                    ]
 
-            );
+                );
+            }
         }
     }
 
@@ -141,12 +158,13 @@ class SortingCondidateController extends Controller
     protected function  pointCertificateDate($condidate)
     {
         $years = 0;
-        $start_year = Carbon::parse($condidate->certificateDate)->year;
-        if ($start_year <= 2022) {
-            $years = (2022 - $start_year)*0.5;
+        $start_year =$condidate->certificateDate;
+        if ($start_year!=null&&$start_year <= 2022) {
+            $years = (2022 - $start_year) * 0.5;
             $additon_points = (0.5 / 365) * 180;
             $years =  $years + $additon_points;
         }
+        //dd( $years , $start_year);
 
         return $years > 5 ? 5 : $years;
     }
@@ -186,7 +204,7 @@ class SortingCondidateController extends Controller
             foreach ($experiences as $experience) {
                 $start = Carbon::parse($experience->start);
                 $end =  Carbon::parse($experience->end);
-                $days = $end->diffInDays($start)+1;
+                $days = $end->diffInDays($start) + 1;
 
                 $point = round($days /  $div, 4);
                 SortingProfessionalExperience::create([

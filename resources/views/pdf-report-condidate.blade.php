@@ -133,7 +133,7 @@
                         </tr>
                         <tr>
                             <td>تاريخ الحصول على الشهادة</td>
-                            <td>{{ $sortingCondidate->condidate->certificateDate }}</td>
+                            <td>{{ $sortingCondidate->condidate->certificateDate }}/06/30</td>
                             <td>{{ $sortingCondidate->PointCertificateDate }}</td>
 
                         </tr>

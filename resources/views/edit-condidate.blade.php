@@ -3,6 +3,15 @@
 @endphp
 @extends('master')
 @section('content')
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
     <div class="card">
         <div class="card-header">
             <h4 class="font-weight-bolder">مترشح جديد</h4>
@@ -25,31 +34,37 @@
                                 class="form-control">
                         </div>
                     </div>
-
-
-                </div>
-                <div class="row">
                     <div class="col">
                         <div class=" input-group input-group-outline mb-3 is-filled">
-                            <label class="form-label">الاسم</label>
+                            <label class="form-label">الاسم واللقب</label>
                             <input type="text" autocomplete="off" name="firstName" value="{{ $condidate->firstName }}"
                                 class="form-control">
                         </div>
                     </div>
 
+                </div>
+                <!--<div class="row">
                     <div class="col">
+                        <div class=" input-group input-group-outline mb-3 is-filled">
+                            <label class="form-label">الاسم واللقب</label>
+                            <input type="text" autocomplete="off" name="firstName" value="{{ $condidate->firstName }}"
+                                class="form-control">
+                        </div>
+                    </div>
+
+                   <div class="col">
                         <div class=" input-group input-group-outline mb-3 is-filled">
                             <label class="form-label">اللقب</label>
                             <input type="text" autocomplete="off" name="lastName" value="{{ $condidate->lastName }}"
                                 class="form-control">
                         </div>
                     </div>
-                </div>
+                </div>-->
                 <div class="row">
                     <div class="col-6">
                         <div class=" input-group input-group-outline mb-3 is-filled">
                             <label class="form-label">تاريخ الميلاد</label>
-                            <input type="date" autocomplete="off" name="birthDate" value="{{ $condidate->birthDate }}"
+                            <input type="date" autocomplete="off" name="birthDate"  value="{{ $condidate->birthDate }}"
                                 class="form-control">
                         </div>
                     </div>
@@ -81,8 +96,9 @@
                 <div class="row">
                     <div class="col-6">
                         <div class=" input-group input-group-outline mb-3 is-filled">
-                            <label class="form-label">تاريخ الحصول على الشهادة</label>
-                            <input type="date" autocomplete="off" name="certificateDate"
+                            <label class="form-label">سنة الحصول على الشهادة</label>
+
+                            <input type="number" autocomplete="off" name="certificateDate"
                                 value="{{ $condidate->certificateDate }}" class="form-control">
                         </div>
                     </div>
@@ -90,7 +106,7 @@
                     <div class="col-6">
                         <div class=" input-group input-group-outline mb-3 is-filled">
                             <label class="form-label">نقطة المقابلة الشفاهية</label>
-                            <input type="text" autocomplete="off" name="interviewPiont"
+                            <input type="text" autocomplete="off" name="interviewPiont" disabled
                                 value="{{ $condidate->interviewPiont }}" class="form-control">
                         </div>
                     </div>

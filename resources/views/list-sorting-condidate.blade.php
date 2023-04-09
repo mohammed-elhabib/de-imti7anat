@@ -49,7 +49,6 @@
                                             </td>
                                             <td class="text-center">
                                                 {{ $sortingCondidate->condidate->firstName ?? '/' }}
-                                                {{ $sortingCondidate->condidate->lastName ?? '/' }}
                                             </td>
                                             <td class="text-center">
                                                 {{ $sortingCondidate->total }}

@@ -1,5 +1,14 @@
 @extends('master')
 @section('content')
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
     <div class="card">
         <div class="card-header">
             <h4 class="font-weight-bolder">مترشح جديد</h4>
@@ -27,17 +36,17 @@
                 <div class="row">
                     <div class="col">
                         <div class=" input-group input-group-outline mb-3">
-                            <label class="form-label">الاسم</label>
+                            <label class="form-label">الاسم و الوقت</label>
                             <input type="text" autocomplete="off" name="firstName" class="form-control">
                         </div>
                     </div>
 
-                    <div class="col">
+                   <!-- <div class="col">
                         <div class=" input-group input-group-outline mb-3">
                             <label class="form-label">اللقب</label>
                             <input type="text" autocomplete="off" name="lastName" class="form-control">
                         </div>
-                    </div>
+                    </div>-->
                 </div>
                 <div class="row">
                     <div class="col-6">
@@ -72,8 +81,8 @@
                 <div class="row">
                     <div class="col-6">
                         <div class=" input-group input-group-outline mb-3">
-                            <label class="form-label">تاريخ الحصول على الشهادة</label>
-                            <input type="date" autocomplete="off" name="certificateDate" class="form-control">
+                            <label class="form-label">نسة الحصول على الشهادة</label>
+                            <input type="number" autocomplete="off" name="certificateDate" class="form-control">
                         </div>
                     </div>
 
